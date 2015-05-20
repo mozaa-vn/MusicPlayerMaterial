@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/selector_song_listview"
+    android:paddingLeft="5dp"
+    android:paddingRight="2dp"
+    android:paddingTop="2dp" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/zingvip" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView1"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@+id/imageView1"
+        android:text="Title"
+        android:textColor="#000"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvArtist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvTitle"
+        android:layout_below="@+id/tvTitle"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp"
+        android:text="TextView"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/tvDownLoad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tvArtist"
+        android:text=" play"
+        android:textColor="#000"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvTotalPlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvDownLoad"
+        android:layout_alignBottom="@+id/tvDownLoad"
+        android:layout_toLeftOf="@+id/tvDownLoad"
+        android:text="1232372323"
+        android:textColor="#000"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/tvBitRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvArtist"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="TextView"
+        android:textColor="#FF0026"
+        android:textSize="13sp" />
+
+</RelativeLayout>

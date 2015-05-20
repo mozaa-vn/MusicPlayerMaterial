@@ -1,21 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ken.music.activity" >
+    package="com.ken.music.activity">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/MasterChild"
+        android:supportsRtl="true">
+
+
+        <!-- main activity-->
         <activity
             android:name="com.ken.music.activity.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <!-- search result-->
+        <activity
+            android:name=".SearchResultActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"
+                android:value=".SearchResultActivity"/>
+        </activity>
+
+
+        <!-- service -->
+        <service
+            android:name="com.ken.music.services.PlayService"
+            android:enabled="true" >
+        </service>
+
+        <!-- widget -->
+        <receiver android:name=".WidgetPlayer">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <!--<action android:name="com.ken.music.activity.WIDGET_BUTTON" />-->
+                <action android:name="MY_PACKAGE_NAME.WIDGET_BUTTON" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+
+
     </application>
 
 </manifest>
