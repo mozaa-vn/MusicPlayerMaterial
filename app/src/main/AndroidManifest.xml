@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name="com.ken.music.utils.Vars"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -27,26 +28,26 @@
         </activity>
 
 
-        <!-- search result-->
-        <activity
-            android:name=".SearchResultActivity"
-            android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable"
-                android:value=".SearchResultActivity"/>
-        </activity>
+        <!--&lt;!&ndash; search result&ndash;&gt;-->
+        <!--<activity-->
+            <!--android:name=".SearchResultActivity"-->
+            <!--android:launchMode="singleTop">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.SEARCH" />-->
+            <!--</intent-filter>-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+            <!--</intent-filter>-->
+            <!--<meta-data-->
+                <!--android:name="android.app.searchable"-->
+                <!--android:resource="@xml/searchable"-->
+                <!--android:value=".SearchResultActivity"/>-->
+        <!--</activity>-->
 
 
         <!-- service -->
         <service
-            android:name="com.ken.music.services.PlayService"
+            android:name="com.ken.music.controls.PlayService"
             android:enabled="true" >
         </service>
 

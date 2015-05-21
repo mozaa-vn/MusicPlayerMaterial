@@ -1,8 +1,9 @@
-package com.ken.music.services;
+package com.ken.music.controls;
 
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,8 +32,11 @@ import com.ken.music.utils.MyUtils;
 import com.ken.music.utils.Vars;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class PlayService extends Service implements 
+public class PlayService extends Service implements
+                                                Observer,
 												OnErrorListener,
 												OnInfoListener, 
 												OnBufferingUpdateListener, 
@@ -121,8 +125,7 @@ public class PlayService extends Service implements
 			intMediaDuration;
 	public static int
 			intCurrentSong,
-			intTotalSong,
-			currentSong;
+			intTotalSong;
 
 	private String pathPlay = "";
 	private SongOffline songOffline = null;
@@ -130,9 +133,12 @@ public class PlayService extends Service implements
 
     public static int currentSongPosition = -1;
     public static int currentTotalSong = -1;
+    public static String titleSong = "";
 
     public static List<SongOnline> currentListOnline = null;    // current list online
     public static List<SongOffline> currentListOffline = null;  // current list online
+    public static SongOnline currenSongOnline;
+    public static SongOffline currentSongOffline;
 	
 	// setting telephone manager
 	private boolean isPauseInCall = false;
@@ -141,7 +147,9 @@ public class PlayService extends Service implements
 	
 	//handler to create the thread to send update position
 	private final Handler handler = new Handler();
-	
+
+    Vars myObserv; // instance of observer
+    Context context;
 	
 ////////////////////////////////////////////////////////////////////////////////
 // service life cycle
@@ -158,8 +166,14 @@ public class PlayService extends Service implements
 		mediaPlayer.setOnInfoListener(this);
 		mediaPlayer.setOnSeekCompleteListener(this);
 		mediaPlayer.setOnPreparedListener(this);
+
+        // setting up observer
+        myObserv = (Vars) getApplication();
+        myObserv.getObserver().addObserver(this);
 		mediaPlayer.reset();
-		
+        context = this.getApplicationContext();
+        // send notify update UI
+        sendUpdate2UI.run();
 	}// end-func onCreate
 	
 	
@@ -309,6 +323,9 @@ public class PlayService extends Service implements
 					pathPlay = songOnline.getSourcePLay().getS320();
 				else if (songOnline.getBitrate().isB128())
 					pathPlay = songOnline.getSourcePLay().getS128();
+
+                // get title
+                titleSong = songOnline.getTitle();
 				
 			}// end-if
 
@@ -346,11 +363,18 @@ public class PlayService extends Service implements
         if (currentSongPosition >= currentTotalSong) {
             currentSongPosition = 0;
         }
+
+
         // get object song by position
         if( Vars.SONG_IS_WHERE == Vars.SONG_OFFLINE ){
 
         } else if( Vars.SONG_IS_WHERE == Vars.SONG_ONLINE ){
-            playNewMedia(Vars.SONG_ONLINE,currentListOnline.get(currentSongPosition));
+            SongOnline song = currentListOnline.get(currentSongPosition);
+
+            playNewMedia(Vars.SONG_ONLINE, song);
+
+            // get title
+            titleSong = song.getTitle();
         }
         Log.d(">>> ken <<< ", "Next Media :: position:"+ currentSongPosition + " -- size: "+ currentTotalSong);
 	}
@@ -365,7 +389,12 @@ public class PlayService extends Service implements
         if( Vars.SONG_IS_WHERE == Vars.SONG_OFFLINE ){
 
         } else if( Vars.SONG_IS_WHERE == Vars.SONG_ONLINE ){
-            playNewMedia(Vars.SONG_ONLINE,currentListOnline.get(currentSongPosition));
+            SongOnline song = currentListOnline.get(currentSongPosition);
+
+            playNewMedia(Vars.SONG_ONLINE, song);
+
+            // get title
+            titleSong = song.getTitle();
         }
         Log.d(">>> ken <<< ", "Previous Media :: position:"+ currentSongPosition + " -- size: "+ currentTotalSong);
 	}
@@ -482,17 +511,25 @@ public class PlayService extends Service implements
 	
 ///////////////////////////////////////////////////////////////////////////////
 //Thread use to send position update
+
+
 	private Runnable sendUpdate2UI = new Runnable() {		
 		@Override
 		public void run() {
 			if(mediaPlayer.isPlaying()){
-				intMediaPosition = mediaPlayer.getCurrentPosition();
-				intMediaDuration = mediaPlayer.getDuration();
-				
-				seekIntent.putExtra(KEY_UPDATE_SEEK_POSITION, intMediaPosition);
-				seekIntent.putExtra(KEY_UPDATE_SEEK_DURATION, intMediaDuration);
-				//seekIntent.putExtra(KEY_UPDATE_SEEK_ENDED, songEnd);
-				sendBroadcast(seekIntent);
+//				intMediaPosition = mediaPlayer.getCurrentPosition();
+//				intMediaDuration = mediaPlayer.getDuration();
+//
+//				seekIntent.putExtra(KEY_UPDATE_SEEK_POSITION, intMediaPosition);
+//				seekIntent.putExtra(KEY_UPDATE_SEEK_DURATION, intMediaDuration);
+//				//seekIntent.putExtra(KEY_UPDATE_SEEK_ENDED, songEnd);
+//				sendBroadcast(seekIntent);
+
+                if( mediaPlayer.getCurrentPosition() > (mediaPlayer.getDuration() - 500) ){
+                    nextMedia();
+                }
+                myObserv.getObserver().setValue(mediaPlayer.getCurrentPosition() + "");
+
 			}//end-if
 			
 			handler.postDelayed(sendUpdate2UI, 1000);
@@ -500,4 +537,8 @@ public class PlayService extends Service implements
 	};
 
 
+    @Override
+    public void update(Observable observable, Object data) {
+
+    }
 }

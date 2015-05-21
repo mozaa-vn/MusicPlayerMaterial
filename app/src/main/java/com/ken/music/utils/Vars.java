@@ -2,20 +2,26 @@ package com.ken.music.utils;
 
 import android.app.Application;
 
+import com.ken.music.myinterface.ObsSetCurrentTime;
+
 //import com.music.myinterface.ObsSetCurrentTime;
 
 public class Vars extends Application {
-//	ObsSetCurrentTime mObsCurrentTime;
+
+    /*
+     *
+     */
+    ObsSetCurrentTime mObsCurrentTime;
 
     @Override
     public void onCreate() {
         super.onCreate();
-//        mObsCurrentTime = new ObsSetCurrentTime();
+        mObsCurrentTime = new ObsSetCurrentTime();
     }
 
-//    public ObsSetCurrentTime getObserver() {
-//        return mObsCurrentTime;
-//    }
+    public ObsSetCurrentTime getObserver() {
+        return mObsCurrentTime;
+    }
 	
 	
 	public static final String KEY_CODE = "fafd463e2131914934b73310aa34a23f",

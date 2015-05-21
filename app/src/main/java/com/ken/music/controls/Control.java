@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.ken.music.objects.Song;
-import com.ken.music.services.PlayService;
 
 public class Control {
 	

@@ -1,30 +1,23 @@
 package com.ken.music.fragment;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.ken.music.activity.R;
 import com.ken.music.adapter.SongOnlineAdapter;
 import com.ken.music.controls.Control;
-import com.ken.music.objects.Song;
 import com.ken.music.objects.SongOnline;
-import com.ken.music.services.PlayService;
+import com.ken.music.controls.PlayService;
 import com.ken.music.utils.MyUtils;
 import com.ken.music.utils.Vars;
 
 import java.util.List;
-
-import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 
 /**
  * Created by neokree on 20/01/15.
@@ -88,9 +81,10 @@ public class SearchOnlineFragment extends Fragment {
 
 //                Toast.makeText(getActivity(),PlayService.currentListOnline.size()+"",Toast.LENGTH_SHORT).show();
 
-                // position of song
+                // set up data for service
                 PlayService.currentSongPosition = MyUtils.positionOfSongOnline(PlayService.currentListOnline, songSend);
                 PlayService.currentTotalSong = listData.size();
+                PlayService.titleSong = songSend.getTitle();
 
             } catch (Exception ex) {
                 ex.printStackTrace();

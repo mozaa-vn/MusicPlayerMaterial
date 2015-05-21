@@ -5,33 +5,31 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.ken.music.controls.Control;
-import com.ken.music.fragment.ChildFragment;
 import com.ken.music.fragment.RankSongsFragment;
 import com.ken.music.fragment.SearchOnlineFragment;
 import com.ken.music.objects.SongOnline;
-import com.ken.music.services.PlayService;
+import com.ken.music.controls.PlayService;
 import com.ken.music.utils.JsonHandler;
 import com.ken.music.utils.MyUtils;
+import com.ken.music.utils.Vars;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 
 
-public class MainActivity extends MaterialNavigationDrawer {
+public class MainActivity extends MaterialNavigationDrawer{
 
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -137,6 +135,7 @@ public class MainActivity extends MaterialNavigationDrawer {
 
         return super.onOptionsItemSelected(item);
     }// end-func onOptionsItemSelected
+
 
 
     ////////////////////////////////////////////////////////////////////////////////

@@ -22,7 +22,7 @@
                 android:layout_width="fill_parent"
                 android:textSize="20dp"
                 android:textColor="@color/color_white"
-                android:text="Song title show from service"
+                android:text=""
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
@@ -35,7 +35,7 @@
             <TextView
                 android:id="@+id/tvTimeWidget"
                 android:layout_width="0dp"
-                android:text="02:45"
+                android:text="00:00"
                 android:textSize="18dp"
                 android:textColor="@color/color_white"
                 android:layout_margin="2dp"
