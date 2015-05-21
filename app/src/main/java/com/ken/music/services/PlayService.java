@@ -28,11 +28,11 @@ import com.ken.music.objects.Song;
 import com.ken.music.objects.SongOffline;
 import com.ken.music.objects.SongOnline;
 import com.ken.music.utils.MyUtils;
+import com.ken.music.utils.Vars;
 
 import java.util.List;
 
 public class PlayService extends Service implements 
-												OnCompletionListener, 
 												OnErrorListener,
 												OnInfoListener, 
 												OnBufferingUpdateListener, 
@@ -91,10 +91,10 @@ public class PlayService extends Service implements
 			ACTION_CONTROL_NEXT 		= 0x3,
 			ACTION_CONTROL_STOP			= 0x4,
 			ACTION_CONTROL_SEEK 		= 0x5,
-			ACTION_REQUEST_POSITION		= 0x6,	
+			ACTION_REQUEST_POSITION		= 0x6,
+            ACTION_CONTROL_PLAY_NEW		= 0x7,
 			ACTION_CONTROL_REWIND 		= 0x8,					
 			ACTION_CONTROL_FAST_FORWARD	= 0x9,
-			ACTION_CONTROL_PLAY_NEW		= 0x7,
 			
 			TYPE_SONG_ONLINE			= 0x0,
 			TYPE_SONG_OFFLINE			= 0x1,
@@ -128,7 +128,8 @@ public class PlayService extends Service implements
 	private SongOffline songOffline = null;
 	private SongOnline songOnline	= null;
 
-    private int currentSongPosition = -1;
+    public static int currentSongPosition = -1;
+    public static int currentTotalSong = -1;
 
     public static List<SongOnline> currentListOnline = null;    // current list online
     public static List<SongOffline> currentListOffline = null;  // current list online
@@ -152,7 +153,6 @@ public class PlayService extends Service implements
 		bufferedIntent	= new Intent(BROADCAST_BUFFER);
 		
 		mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		mediaPlayer.setOnCompletionListener(this);
 		mediaPlayer.setOnErrorListener(this);
 		mediaPlayer.setOnBufferingUpdateListener(this);
 		mediaPlayer.setOnInfoListener(this);
@@ -172,49 +172,7 @@ public class PlayService extends Service implements
 
 	}// end-func onStartCommand
 		
-		// get the telephone manager
-//		telephonyManager   = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-//		phoneStateListener = new PhoneStateListener(){
-//			@Override
-//			public void onCallStateChanged(int state, String incomingNumber) {
-//				switch(state){
-//				case TelephonyManager.CALL_STATE_OFFHOOK:
-//					Log.d(">>>>> ken <<<<<", "PlayService --- CALL STATE OFF HOOK");
-//					break;
-//				
-//				case TelephonyManager.CALL_STATE_RINGING:
-//					Log.d(">>>>> ken <<<<<", "PlayService --- CALL STATE RINGING");
-////					if(mediaPlayer != null){
-//						if(mediaPlayer.isPlaying()){
-//							pauseMedia();
-//							isPauseInCall = true;
-//						}
-////					}
-//					break;
-//					
-//				case TelephonyManager.CALL_STATE_IDLE:
-//					Log.d(">>>>> ken <<<<<", "PlayService --- CALL STATE IDLE");
-////					if(mediaPlayer != null){
-//						 if(isPauseInCall){
-//							 playMedia();
-//							 isPauseInCall = false;
-//						 }
-////					}
-//					break;
-//				}// end-switch
-//				
-//				// register the listener with the telephone manager
-//				telephonyManager.listen(phoneStateListener,
-//										PhoneStateListener.LISTEN_CALL_STATE );
-//				
-//				super.onCallStateChanged(state, incomingNumber);
-//			}// end-func onCallStateChanged
-//		};// end-phone state listener
-		
-		
-		// return super.onStartCommand(intent, flags, startId);
-	
-	
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
@@ -289,12 +247,6 @@ public class PlayService extends Service implements
 
 
 	@Override
-	public void onCompletion(MediaPlayer mp) {
-		nextMedia();
-	}// end-func onCompletion
-
-
-	@Override
 	public void onPrepared(MediaPlayer mp) {
 		
 		// send message to activity to end progress dialog
@@ -352,14 +304,11 @@ public class PlayService extends Service implements
 				//khởi tạo đối tượng thực thi
 				songOnline = (SongOnline) object;
 
-                // position of song
-                currentSongPosition = MyUtils.positionOfSongOnline(currentListOnline,songOnline);
-
 				// kiểm tra chất lượng nhạc để lấy đường dẫn play
 				if(songOnline.getBitrate().isB320())
 					pathPlay = songOnline.getSourcePLay().getS320();
 				else if (songOnline.getBitrate().isB128())
-					pathPlay = songOnline.getSourcePLay().getS320();
+					pathPlay = songOnline.getSourcePLay().getS128();
 				
 			}// end-if
 
@@ -393,12 +342,32 @@ public class PlayService extends Service implements
 	
 	
 	private void nextMedia(){
-		// TODO next
+        currentSongPosition ++;
+        if (currentSongPosition >= currentTotalSong) {
+            currentSongPosition = 0;
+        }
+        // get object song by position
+        if( Vars.SONG_IS_WHERE == Vars.SONG_OFFLINE ){
+
+        } else if( Vars.SONG_IS_WHERE == Vars.SONG_ONLINE ){
+            playNewMedia(Vars.SONG_ONLINE,currentListOnline.get(currentSongPosition));
+        }
+        Log.d(">>> ken <<< ", "Next Media :: position:"+ currentSongPosition + " -- size: "+ currentTotalSong);
 	}
 	
 	
 	private void previousMedia(){
-		// TODO previous
+        currentSongPosition --;
+        if (currentSongPosition < 0) {
+            currentSongPosition = 0;
+        }
+        // get object song by position
+        if( Vars.SONG_IS_WHERE == Vars.SONG_OFFLINE ){
+
+        } else if( Vars.SONG_IS_WHERE == Vars.SONG_ONLINE ){
+            playNewMedia(Vars.SONG_ONLINE,currentListOnline.get(currentSongPosition));
+        }
+        Log.d(">>> ken <<< ", "Previous Media :: position:"+ currentSongPosition + " -- size: "+ currentTotalSong);
 	}
 	
 	
@@ -433,12 +402,9 @@ public class PlayService extends Service implements
 				// lấy dữ liệu từ broadcast
 				int typeOfSong = intent.getExtras().getInt(KEY_CONTROL_VALUE);
 				Song object = (Song) intent.getSerializableExtra(KEY_DATA_SONG);
-				
 				// phát bài nhạc mới
 				playNewMedia(typeOfSong, object);
-				
 				// TODO gửi broadcast để cập nhật giao diện
-				
 				break;
 				
 			

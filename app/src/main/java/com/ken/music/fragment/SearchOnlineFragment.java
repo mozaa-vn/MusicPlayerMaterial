@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ken.music.activity.R;
 import com.ken.music.adapter.SongOnlineAdapter;
@@ -18,6 +19,7 @@ import com.ken.music.controls.Control;
 import com.ken.music.objects.Song;
 import com.ken.music.objects.SongOnline;
 import com.ken.music.services.PlayService;
+import com.ken.music.utils.MyUtils;
 import com.ken.music.utils.Vars;
 
 import java.util.List;
@@ -84,6 +86,11 @@ public class SearchOnlineFragment extends Fragment {
 
                 // show my view control
 
+//                Toast.makeText(getActivity(),PlayService.currentListOnline.size()+"",Toast.LENGTH_SHORT).show();
+
+                // position of song
+                PlayService.currentSongPosition = MyUtils.positionOfSongOnline(PlayService.currentListOnline, songSend);
+                PlayService.currentTotalSong = listData.size();
 
             } catch (Exception ex) {
                 ex.printStackTrace();

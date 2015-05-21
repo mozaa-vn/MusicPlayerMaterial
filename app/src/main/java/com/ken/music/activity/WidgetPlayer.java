@@ -89,16 +89,11 @@ public class WidgetPlayer extends AppWidgetProvider {
         views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
         if(ACTION_CONTROL_NEXT.equals(intent.getAction())){
-//            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
-//            RemoteViews remoteViews;
-//            ComponentName watchWidget;
-
-//            remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-//            watchWidget = new ComponentName(context, Widget.class);
-
-//            remoteViews.setTextViewText(R.id.sync_button, "TESTING");
-//            appWidgetManager.updateAppWidget(watchWidget, remoteViews);
+            Control.sendControl(PlayService.ACTION_CONTROL_NEXT, null);
+            setIsPlay();
+        } else if(ACTION_CONTROL_PREVIOUS.equals(intent.getAction())) {
+            Control.sendControl(PlayService.ACTION_CONTROL_PREVIOUS, null);
+            setIsPlay();
         } else if(ACTION_CONTROL_STOP.equals(intent.getAction())){
             Control.sendControl(PlayService.ACTION_CONTROL_STOP, null);
             setIsNotPlay();
