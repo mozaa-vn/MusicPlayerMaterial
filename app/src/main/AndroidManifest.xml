@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ken.music.activity">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--<uses-permission android:name="android.permission.BIND_APPWIDGET" />-->
 
     <application
         android:name="com.ken.music.utils.Vars"
@@ -30,26 +32,38 @@
 
         <!--&lt;!&ndash; search result&ndash;&gt;-->
         <!--<activity-->
-            <!--android:name=".SearchResultActivity"-->
-            <!--android:launchMode="singleTop">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.SEARCH" />-->
-            <!--</intent-filter>-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.VIEW" />-->
-            <!--</intent-filter>-->
-            <!--<meta-data-->
-                <!--android:name="android.app.searchable"-->
-                <!--android:resource="@xml/searchable"-->
-                <!--android:value=".SearchResultActivity"/>-->
+        <!--android:name=".SearchResultActivity"-->
+        <!--android:launchMode="singleTop">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.SEARCH" />-->
+        <!--</intent-filter>-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.VIEW" />-->
+        <!--</intent-filter>-->
+        <!--<meta-data-->
+        <!--android:name="android.app.searchable"-->
+        <!--android:resource="@xml/searchable"-->
+        <!--android:value=".SearchResultActivity"/>-->
         <!--</activity>-->
 
 
         <!-- service -->
         <service
             android:name="com.ken.music.controls.PlayService"
-            android:enabled="true" >
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
         </service>
+
+        <!-- headset -->
+        <receiver
+            android:name="com.ken.music.controls.MediaButtonIntentReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
 
         <!-- widget -->
         <receiver android:name=".WidgetPlayer">

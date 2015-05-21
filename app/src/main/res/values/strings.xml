@@ -7,4 +7,16 @@
     <string name="drawer_close">Close</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="search_title">Search</string>
+
+    <string name="my_music">My Music</string>
+    <string name="bai_hat_s">Bài hát</string>
+    <string name="bai_hat">bài hát</string>
+    <string name="album">Album</string>
+    <string name="ca_si">Ca sĩ</string>
+    <string name="playlist">Playlist</string>
+    <string name="nhac_online">Nhạc Online</string>
+    <string name="blog_truyen">Blog Truyện</string>
+    <string name="nhac_offline">Nhạc Offline</string>
+    <string name="description_icon_music_view">Icon Bài Hát Offline</string>
+    <string name="description_icon_album_view">Icon Album Offline</string>
 </resources>

@@ -35,7 +35,7 @@
             <TextView
                 android:id="@+id/tvTimeWidget"
                 android:layout_width="0dp"
-                android:text="00:00"
+                android:text=""
                 android:textSize="18dp"
                 android:textColor="@color/color_white"
                 android:layout_margin="2dp"

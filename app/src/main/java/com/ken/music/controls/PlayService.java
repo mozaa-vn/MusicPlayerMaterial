@@ -117,23 +117,18 @@ public class PlayService extends Service implements
 			feedBackIntent, 	//Intent send preparing
 			seekIntent,		//Intent send update position to activity
 			bufferedIntent;
-	
-	// Variable to send positon and duration of media to the activity 
-	// (send update position)
-	private int
-			intMediaPosition,
-			intMediaDuration;
-	public static int
-			intCurrentSong,
-			intTotalSong;
+
 
 	private String pathPlay = "";
 	private SongOffline songOffline = null;
 	private SongOnline songOnline	= null;
 
-    public static int currentSongPosition = -1;
-    public static int currentTotalSong = -1;
+    // Variable to send positon and duration of media to the activity
+    // (send update position)
+    public static int intCurrentSong = -1;
+    public static int intTotalSong = -1;
     public static String titleSong = "";
+    public static int intSongDuration = 0;
 
     public static List<SongOnline> currentListOnline = null;    // current list online
     public static List<SongOffline> currentListOffline = null;  // current list online
@@ -156,6 +151,9 @@ public class PlayService extends Service implements
 	
 	@Override
 	public void onCreate() {
+
+        context = this.getApplicationContext();
+
 		feedBackIntent	= new Intent(BROADCAST_FEEDBACK);	
 		seekIntent		= new Intent(BROADCAST_SEEK);
 		bufferedIntent	= new Intent(BROADCAST_BUFFER);
@@ -171,7 +169,7 @@ public class PlayService extends Service implements
         myObserv = (Vars) getApplication();
         myObserv.getObserver().addObserver(this);
 		mediaPlayer.reset();
-        context = this.getApplicationContext();
+
         // send notify update UI
         sendUpdate2UI.run();
 	}// end-func onCreate
@@ -179,8 +177,14 @@ public class PlayService extends Service implements
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		// TODO Auto-generated method stub
+		// TODO register receiver control media
 		registerReceiver(controlReceiver, new IntentFilter(BROADCAST_CONTROL));
+
+        // register receiver headset
+        MediaButtonIntentReceiver mMediaButtonReceiver = new MediaButtonIntentReceiver(context);
+        IntentFilter mediaFilter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);
+        mediaFilter.setPriority(99999999);
+        registerReceiver(mMediaButtonReceiver, mediaFilter);
 
 		return START_STICKY;
 
@@ -189,21 +193,18 @@ public class PlayService extends Service implements
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
 		return null;
 	}// end-func onBind
 	
 	
 	@Override
 	public boolean onUnbind(Intent intent) {
-		// TODO Auto-generated method stub
 		return super.onUnbind(intent);
 	}// end-func onUnbind
 	
 	
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 		
 		//stop media
@@ -297,6 +298,7 @@ public class PlayService extends Service implements
 	private void playMedia(){
 		// TODO play
 		mediaPlayer.start();
+        myObserv.getObserver().setIsPlaying(true);
 	}
 	
 	
@@ -326,7 +328,7 @@ public class PlayService extends Service implements
 
                 // get title
                 titleSong = songOnline.getTitle();
-				
+
 			}// end-if
 
 			// thiết lập data source cho media
@@ -337,6 +339,9 @@ public class PlayService extends Service implements
 			
 			// start media
 			mediaPlayer.start();
+            myObserv.getObserver().setIsPlaying(true);
+            intSongDuration = mediaPlayer.getDuration();
+            Log.d(">>>>> ken <<<<<", "position: " + mediaPlayer.getCurrentPosition() + "-- duration: "+mediaPlayer.getDuration());
 		}catch(Exception ex){
 			Log.d(">>>>> ken <<<<<", Log.getStackTraceString(ex));
 		}// end-try
@@ -347,6 +352,7 @@ public class PlayService extends Service implements
 	private void pauseMedia(){
 		// TODO	pause
 		mediaPlayer.pause();
+        myObserv.getObserver().setIsPlaying(false);
 	}
 	
 	
@@ -355,48 +361,47 @@ public class PlayService extends Service implements
 //		mediaPlayer.stop();
         mediaPlayer.seekTo(0);
         mediaPlayer.pause();
+        myObserv.getObserver().setIsPlaying(true);
 	}
 	
 	
 	private void nextMedia(){
-        currentSongPosition ++;
-        if (currentSongPosition >= currentTotalSong) {
-            currentSongPosition = 0;
+        intCurrentSong ++;
+        if (intCurrentSong >= intTotalSong) {
+            intCurrentSong = 0;
         }
-
-
         // get object song by position
         if( Vars.SONG_IS_WHERE == Vars.SONG_OFFLINE ){
 
         } else if( Vars.SONG_IS_WHERE == Vars.SONG_ONLINE ){
-            SongOnline song = currentListOnline.get(currentSongPosition);
+            SongOnline song = currentListOnline.get(intCurrentSong);
 
             playNewMedia(Vars.SONG_ONLINE, song);
 
-            // get title
+            // set title
             titleSong = song.getTitle();
         }
-        Log.d(">>> ken <<< ", "Next Media :: position:"+ currentSongPosition + " -- size: "+ currentTotalSong);
+        Log.d(">>> ken <<< ", "Next Media :: position:"+ intCurrentSong + " -- size: "+ intTotalSong);
 	}
 	
 	
 	private void previousMedia(){
-        currentSongPosition --;
-        if (currentSongPosition < 0) {
-            currentSongPosition = 0;
+        intCurrentSong --;
+        if (intCurrentSong < 0) {
+            intCurrentSong = 0;
         }
         // get object song by position
         if( Vars.SONG_IS_WHERE == Vars.SONG_OFFLINE ){
 
         } else if( Vars.SONG_IS_WHERE == Vars.SONG_ONLINE ){
-            SongOnline song = currentListOnline.get(currentSongPosition);
+            SongOnline song = currentListOnline.get(intCurrentSong);
 
             playNewMedia(Vars.SONG_ONLINE, song);
 
             // get title
             titleSong = song.getTitle();
         }
-        Log.d(">>> ken <<< ", "Previous Media :: position:"+ currentSongPosition + " -- size: "+ currentTotalSong);
+        Log.d(">>> ken <<< ", "Previous Media :: position:"+ intCurrentSong + " -- size: "+ intTotalSong);
 	}
 	
 	
@@ -525,13 +530,14 @@ public class PlayService extends Service implements
 //				//seekIntent.putExtra(KEY_UPDATE_SEEK_ENDED, songEnd);
 //				sendBroadcast(seekIntent);
 
-                if( mediaPlayer.getCurrentPosition() > (mediaPlayer.getDuration() - 500) ){
-                    nextMedia();
-                }
                 myObserv.getObserver().setValue(mediaPlayer.getCurrentPosition() + "");
 
+                if( mediaPlayer.getCurrentPosition() > (mediaPlayer.getDuration() - 1111) ){
+                    nextMedia();
+                }
+
 			}//end-if
-			
+
 			handler.postDelayed(sendUpdate2UI, 1000);
 		}
 	};

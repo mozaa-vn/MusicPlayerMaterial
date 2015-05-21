@@ -82,8 +82,8 @@ public class SearchOnlineFragment extends Fragment {
 //                Toast.makeText(getActivity(),PlayService.currentListOnline.size()+"",Toast.LENGTH_SHORT).show();
 
                 // set up data for service
-                PlayService.currentSongPosition = MyUtils.positionOfSongOnline(PlayService.currentListOnline, songSend);
-                PlayService.currentTotalSong = listData.size();
+                PlayService.intCurrentSong = MyUtils.positionOfSongOnline(PlayService.currentListOnline, songSend);
+                PlayService.intTotalSong = listData.size();
                 PlayService.titleSong = songSend.getTitle();
 
             } catch (Exception ex) {

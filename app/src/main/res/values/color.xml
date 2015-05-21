@@ -4,6 +4,13 @@
     <color name="color_white">#FFF</color>
     <color name="color_black">#000</color>
 
+    <!-- color layout main-->
+
+    <color name="bg_layout_main">#fcfcfc</color>
+    <color name="bg_playing_control">#272727</color>
+    <color name="basic_color">#f018e8</color>
+    <color name="bg_item_pressed">#fccaf8</color>
+
     <!-- color for toolbar-->
     <color name="color_toolbar_light">#29B6F6</color>
     <color name="color_toolbar_dark">#0288D1</color>

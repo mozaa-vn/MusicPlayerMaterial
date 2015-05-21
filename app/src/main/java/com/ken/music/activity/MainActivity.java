@@ -14,6 +14,7 @@ import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
 import com.ken.music.controls.Control;
+import com.ken.music.fragment.HomeFragment;
 import com.ken.music.fragment.RankSongsFragment;
 import com.ken.music.fragment.SearchOnlineFragment;
 import com.ken.music.objects.SongOnline;
@@ -43,8 +44,9 @@ public class MainActivity extends MaterialNavigationDrawer{
         // set section
 //        this.addSection(newSection("Section 3", R.mipmap.ic_mic_white_24dp, new SearchOnlineFragment()).setSectionColor(getResources().getColor(R.color.color_toolbar_light)));
 
+        this.addSection(newSection("Trang Chủ", R.mipmap.ic_mic_white_24dp, new HomeFragment()));
         this.addSection(newSection("Bảng Xếp Hạng", R.mipmap.ic_mic_white_24dp, new RankSongsFragment()));
-        this.addSection(newSection("Tìm Kiếm Online", R.mipmap.ic_mic_white_24dp, new SearchOnlineFragment()));
+        this.addSection(newSection("Tìm Bài Hát Online", R.mipmap.ic_mic_white_24dp, new SearchOnlineFragment()));
 
     }
 
@@ -83,7 +85,6 @@ public class MainActivity extends MaterialNavigationDrawer{
         searchView.setSearchableInfo( searchManager.getSearchableInfo(getComponentName()) );
 
         final Toast toast = new Toast(this);
-
         if (searchView != null ) {
             SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener()
             {

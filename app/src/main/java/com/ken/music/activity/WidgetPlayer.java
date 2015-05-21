@@ -12,6 +12,7 @@ import android.widget.RemoteViews;
 
 import com.ken.music.controls.Control;
 import com.ken.music.controls.PlayService;
+import com.ken.music.myinterface.ObsSetCurrentTime;
 import com.ken.music.utils.MyUtils;
 import com.ken.music.utils.Vars;
 
@@ -42,9 +43,21 @@ public class WidgetPlayer extends AppWidgetProvider implements Observer{
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
+
         mContext = context;
         myObserv = (Vars) context.getApplicationContext();
         myObserv.getObserver().addObserver(this);
+
+        // tạo 1 cái remote view để diều khiển khi ở màn hình chủ
+        views= new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+        // set state play for control
+        if(myObserv.getObserver().getIsPlaying()){
+            setIsPlay();
+        } else {
+            setIsNotPlay();
+        }
+
+        AppWidgetManager.getInstance(context).updateAppWidget( new ComponentName(context, WidgetPlayer.class),views);
     }
 
 
@@ -100,6 +113,7 @@ public class WidgetPlayer extends AppWidgetProvider implements Observer{
         views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
         mContext = context;
 
+        // send action to service
         if(ACTION_CONTROL_NEXT.equals(intent.getAction())){
             Control.sendControl(PlayService.ACTION_CONTROL_NEXT, null);
             setIsPlay();
@@ -109,6 +123,7 @@ public class WidgetPlayer extends AppWidgetProvider implements Observer{
         } else if(ACTION_CONTROL_STOP.equals(intent.getAction())){
             Control.sendControl(PlayService.ACTION_CONTROL_STOP, null);
             setIsNotPlay();
+            views.setTextViewText(R.id.tvTimeWidget, "00:00");
         } else if(ACTION_CONTROL_PAUSE.equals(intent.getAction())){
             Control.sendControl(PlayService.ACTION_CONTROL_PAUSE, null);
             setIsNotPlay();
@@ -149,8 +164,13 @@ public class WidgetPlayer extends AppWidgetProvider implements Observer{
 
         // set text
         views.setTextViewText(R.id.tvTimeWidget, textTime);
-
         views.setTextViewText(R.id.tvSongTitleWidget, PlayService.titleSong);
+
+        if(myObserv.getObserver().getIsPlaying()){
+            setIsPlay();
+        } else {
+            setIsNotPlay();
+        }
 
         // update widget
         AppWidgetManager.getInstance(mContext).updateAppWidget( new ComponentName(mContext, WidgetPlayer.class),views);
