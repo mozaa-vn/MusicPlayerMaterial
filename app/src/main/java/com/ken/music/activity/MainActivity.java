@@ -111,6 +111,7 @@ public class MainActivity extends MaterialNavigationDrawer{
                         } else if (getCurrentSection().getTargetFragment() instanceof RankSongsFragment){
                             toast.makeText(getApplicationContext(), "đây là fragment RANK SONGS", Toast.LENGTH_LONG).show();
                         }
+
                     }
 
                     return true;

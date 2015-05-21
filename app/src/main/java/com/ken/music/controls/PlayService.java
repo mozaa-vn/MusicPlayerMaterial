@@ -361,7 +361,8 @@ public class PlayService extends Service implements
 //		mediaPlayer.stop();
         mediaPlayer.seekTo(0);
         mediaPlayer.pause();
-        myObserv.getObserver().setIsPlaying(true);
+        myObserv.getObserver().setIsPlaying(false);
+        myObserv.getObserver().setValue(0+"");
 	}
 	
 	
