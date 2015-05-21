@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 /**
- * Created by admin on 5/20/2015.
+ * Created by ken on 5/20/2015.
  */
+
+// some change
+
 public class SearchResultActivity extends Activity {
 
     public static final String JARGON = "search";
