@@ -46,7 +46,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvTotalSong"
+                    android:id="@+id/tvTotalSongbanner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvTitleBanner"
@@ -63,7 +63,7 @@
                     android:layout_below="@+id/tvTitleBanner"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@+id/tvTotalSong"
+                    android:layout_toRightOf="@+id/tvTotalSongbanner"
                     android:text="@string/bai_hat"
                     android:textColor="#fff"
                     android:textSize="14sp" />

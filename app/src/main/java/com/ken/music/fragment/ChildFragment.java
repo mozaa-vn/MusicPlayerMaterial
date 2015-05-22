@@ -5,6 +5,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,7 +23,18 @@ public class ChildFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         Log.i("MaterialNavigationDrawer Master-Child","Child created");
 
+        setHasOptionsMenu(true);
+
         return inflater.inflate(R.layout.masterchild_child,container,false);
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        MenuItem item=menu.findItem(R.id.search);
+        item.setVisible(true);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 }

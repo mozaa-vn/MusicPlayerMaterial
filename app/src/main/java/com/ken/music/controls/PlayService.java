@@ -167,7 +167,7 @@ public class PlayService extends Service implements
 
         // setting up observer
         myObserv = (Vars) getApplication();
-        myObserv.getObserver().addObserver(this);
+//        myObserv.getObserver().addObserver(this);
 		mediaPlayer.reset();
 
         // send notify update UI
@@ -177,6 +177,7 @@ public class PlayService extends Service implements
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+
 		// TODO register receiver control media
 		registerReceiver(controlReceiver, new IntentFilter(BROADCAST_CONTROL));
 
@@ -206,7 +207,9 @@ public class PlayService extends Service implements
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		
+
+//        myObserv.getObserver().setIsStopMedia(true);
+
 		//stop media
 		if (mediaPlayer != null) {
 			if(mediaPlayer.isPlaying())
@@ -339,11 +342,12 @@ public class PlayService extends Service implements
 			
 			// start media
 			mediaPlayer.start();
+//            myObserv.getObserver().setIsStopMedia(false);
             myObserv.getObserver().setIsPlaying(true);
             intSongDuration = mediaPlayer.getDuration();
-            Log.d(">>>>> ken <<<<<", "position: " + mediaPlayer.getCurrentPosition() + "-- duration: "+mediaPlayer.getDuration());
+            Log.d(">>> ken <<<", "position: " + mediaPlayer.getCurrentPosition() + "-- duration: "+mediaPlayer.getDuration());
 		}catch(Exception ex){
-			Log.d(">>>>> ken <<<<<", Log.getStackTraceString(ex));
+			Log.d(">>> ken <<<", Log.getStackTraceString(ex));
 		}// end-try
 		
 	}// end-func playNewMedia
@@ -374,9 +378,15 @@ public class PlayService extends Service implements
         // get object song by position
         if( Vars.SONG_IS_WHERE == Vars.SONG_OFFLINE ){
 
-        } else if( Vars.SONG_IS_WHERE == Vars.SONG_ONLINE ){
-            SongOnline song = currentListOnline.get(intCurrentSong);
+            SongOffline song = currentListOffline.get(intCurrentSong);
+            playNewMedia(Vars.SONG_OFFLINE, song);
 
+            // set title
+            titleSong = song.getTitle();
+
+        } else if( Vars.SONG_IS_WHERE == Vars.SONG_ONLINE ){
+
+            SongOnline song = currentListOnline.get(intCurrentSong);
             playNewMedia(Vars.SONG_ONLINE, song);
 
             // set title
@@ -393,6 +403,12 @@ public class PlayService extends Service implements
         }
         // get object song by position
         if( Vars.SONG_IS_WHERE == Vars.SONG_OFFLINE ){
+
+            SongOffline song = currentListOffline.get(intCurrentSong);
+            playNewMedia(Vars.SONG_OFFLINE, song);
+
+            // set title
+            titleSong = song.getTitle();
 
         } else if( Vars.SONG_IS_WHERE == Vars.SONG_ONLINE ){
             SongOnline song = currentListOnline.get(intCurrentSong);
@@ -427,7 +443,7 @@ public class PlayService extends Service implements
 	private BroadcastReceiver controlReceiver = new BroadcastReceiver() {	
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d(">>>>> ken <<<<<", "1. BroadcastReceiver controlReceiver - SERVICE");
+			Log.d(">>> ken <<<", "1. BroadcastReceiver controlReceiver - SERVICE");
 			
 			int action = intent.getExtras().getInt(KEY_CONTROL_ACTION);
 			
@@ -440,6 +456,7 @@ public class PlayService extends Service implements
 				// phát bài nhạc mới
 				playNewMedia(typeOfSong, object);
 				// TODO gửi broadcast để cập nhật giao diện
+
 				break;
 				
 			
@@ -495,7 +512,7 @@ public class PlayService extends Service implements
 				break;
 			}// end-switch
 
-			Log.d(">>>>> ken <<<<<", "2. BroadcastReceiver controlReceiver - SERVICE, Action = " + action);
+			Log.d(">>> ken <<<", "2. BroadcastReceiver controlReceiver - SERVICE, Action = " + action);
 		}// end-func onReceive
 	}; // end-broadcast controlReceiver
 	

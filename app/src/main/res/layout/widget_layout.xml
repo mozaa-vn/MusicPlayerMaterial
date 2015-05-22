@@ -20,7 +20,7 @@
             <TextView
                 android:id="@+id/tvSongTitleWidget"
                 android:layout_width="fill_parent"
-                android:textSize="20dp"
+                android:textSize="16dp"
                 android:textColor="@color/color_white"
                 android:text=""
                 android:layout_height="wrap_content" />

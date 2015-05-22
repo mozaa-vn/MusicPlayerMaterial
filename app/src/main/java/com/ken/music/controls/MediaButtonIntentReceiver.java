@@ -22,7 +22,7 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver implements Obse
     public MediaButtonIntentReceiver(Context context) {
         super();
         myObserv = (Vars) context.getApplicationContext();
-        myObserv.getObserver().addObserver(this);
+        myObserv .getObserver().addObserver(this);
     }
 
     @Override

@@ -2,9 +2,10 @@ package com.ken.music.myinterface;
 
 import java.util.Observable;
 
-public class ObsSetCurrentTime extends Observable{
+public class IUpdateOfSong extends Observable{
 	private String currentTime = "00:00";
     private boolean isPlaying = false;
+//    private boolean isStopMedia = false;
 
     public boolean getIsPlaying(){
         return isPlaying;
@@ -15,6 +16,16 @@ public class ObsSetCurrentTime extends Observable{
         setChanged();
         notifyObservers();
     }
+
+//    public boolean getIsStopMedia(){
+//        return isStopMedia;
+//    }
+//
+//    public void setIsStopMedia(boolean state){
+//        this.isStopMedia = state;
+//        setChanged();
+//        notifyObservers();
+//    }
 
 	public String getValue() {
 		return currentTime;

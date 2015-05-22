@@ -1,18 +1,17 @@
 package com.ken.music.activity;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import com.ken.music.controls.Control;
 import com.ken.music.controls.PlayService;
-import com.ken.music.myinterface.ObsSetCurrentTime;
 import com.ken.music.utils.MyUtils;
 import com.ken.music.utils.Vars;
 
@@ -43,21 +42,25 @@ public class WidgetPlayer extends AppWidgetProvider implements Observer{
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
+        try {
+            mContext = context;
+            myObserv = (Vars) context.getApplicationContext();
+            myObserv.getObserver().addObserver(this);
 
-        mContext = context;
-        myObserv = (Vars) context.getApplicationContext();
-        myObserv.getObserver().addObserver(this);
+            // tạo 1 cái remote view để diều khiển khi ở màn hình chủ
+            views= new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+            // set state play for control
+            if(myObserv.getObserver().getIsPlaying()){
+                setIsPlay();
+            } else {
+                setIsNotPlay();
+            }
 
-        // tạo 1 cái remote view để diều khiển khi ở màn hình chủ
-        views= new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-        // set state play for control
-        if(myObserv.getObserver().getIsPlaying()){
-            setIsPlay();
-        } else {
-            setIsNotPlay();
+            AppWidgetManager.getInstance(context).updateAppWidget( new ComponentName(context, WidgetPlayer.class),views);
+
+        }catch ( Exception ex){
+            Log.d(">>> ken <<<", Log.getStackTraceString(ex));
         }
-
-        AppWidgetManager.getInstance(context).updateAppWidget( new ComponentName(context, WidgetPlayer.class),views);
     }
 
 
@@ -76,69 +79,73 @@ public class WidgetPlayer extends AppWidgetProvider implements Observer{
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 //        mContext = context;
-        // There may be multiple widgets active, so update all of them
-        final int N = appWidgetIds.length;
-        for (int i = 0; i < N; i++) {
-            updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
-            int appWidgetId = appWidgetIds[i];
+        try {
+            final int N = appWidgetIds.length;
+            for (int i = 0; i < N; i++) {
+                updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
+                int appWidgetId = appWidgetIds[i];
 
-            // tạo 1 cái remote view để diều khiển khi ở màn hình chủ
-            views= new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+                // tạo 1 cái remote view để diều khiển khi ở màn hình chủ
+                views= new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-            // thiet lap su kien
-            views.setOnClickPendingIntent(R.id.ivNextWidget, getPendingSelfIntent(context, ACTION_CONTROL_NEXT));
-            views.setOnClickPendingIntent(R.id.ivPreviousWidget, getPendingSelfIntent(context, ACTION_CONTROL_PREVIOUS));
-            views.setOnClickPendingIntent(R.id.ivPauseWidget, getPendingSelfIntent(context, ACTION_CONTROL_PAUSE));
-            views.setOnClickPendingIntent(R.id.ivPlayWidget, getPendingSelfIntent(context, ACTION_CONTROL_PLAY));
-            views.setOnClickPendingIntent(R.id.ivStopWidget, getPendingSelfIntent(context, ACTION_CONTROL_STOP));
+                // thiet lap su kien
+                views.setOnClickPendingIntent(R.id.ivNextWidget, getPendingSelfIntent(context, ACTION_CONTROL_NEXT));
+                views.setOnClickPendingIntent(R.id.ivPreviousWidget, getPendingSelfIntent(context, ACTION_CONTROL_PREVIOUS));
+                views.setOnClickPendingIntent(R.id.ivPauseWidget, getPendingSelfIntent(context, ACTION_CONTROL_PAUSE));
+                views.setOnClickPendingIntent(R.id.ivPlayWidget, getPendingSelfIntent(context, ACTION_CONTROL_PLAY));
+                views.setOnClickPendingIntent(R.id.ivStopWidget, getPendingSelfIntent(context, ACTION_CONTROL_STOP));
 
-            // update widget
-            appWidgetManager.updateAppWidget(appWidgetId, views);
+                // update widget
+                appWidgetManager.updateAppWidget(appWidgetId, views);
+            }
+        }catch ( Exception ex){
+            Log.d(">>> ken <<<", Log.getStackTraceString(ex));
         }
     }
+
+
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-//        CharSequence widgetText = context.getString(R.string.appwidget_text);
-        // Construct the RemoteViews object
-//        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-//        views.setTextViewText(R.id.appwidget_text, widgetText);
-        // Instruct the widget manager to update the widget
-//        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
-        views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-        mContext = context;
+        try {
+            super.onReceive(context, intent);
+            views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+            mContext = context;
 
-        // send action to service
-        if(ACTION_CONTROL_NEXT.equals(intent.getAction())){
-            Control.sendControl(PlayService.ACTION_CONTROL_NEXT, null);
-            setIsPlay();
-        } else if(ACTION_CONTROL_PREVIOUS.equals(intent.getAction())) {
-            Control.sendControl(PlayService.ACTION_CONTROL_PREVIOUS, null);
-            setIsPlay();
-        } else if(ACTION_CONTROL_STOP.equals(intent.getAction())){
-            Control.sendControl(PlayService.ACTION_CONTROL_STOP, null);
-            setIsNotPlay();
-            views.setTextViewText(R.id.tvTimeWidget, "00:00");
-        } else if(ACTION_CONTROL_PAUSE.equals(intent.getAction())){
-            Control.sendControl(PlayService.ACTION_CONTROL_PAUSE, null);
-            setIsNotPlay();
-        } else if(ACTION_CONTROL_PLAY.equals(intent.getAction())){
-            Control.sendControl(PlayService.ACTION_CONTROL_PLAY, null);
-            setIsPlay();
+            // send action to service
+            if(ACTION_CONTROL_NEXT.equals(intent.getAction())){
+                Control.sendControl(PlayService.ACTION_CONTROL_NEXT, null);
+                setIsPlay();
+            } else if(ACTION_CONTROL_PREVIOUS.equals(intent.getAction())) {
+                Control.sendControl(PlayService.ACTION_CONTROL_PREVIOUS, null);
+                setIsPlay();
+            } else if(ACTION_CONTROL_STOP.equals(intent.getAction())){
+                Control.sendControl(PlayService.ACTION_CONTROL_STOP, null);
+                setIsNotPlay();
+                views.setTextViewText(R.id.tvTimeWidget, "00:00");
+            } else if(ACTION_CONTROL_PAUSE.equals(intent.getAction())){
+                Control.sendControl(PlayService.ACTION_CONTROL_PAUSE, null);
+                setIsNotPlay();
+            } else if(ACTION_CONTROL_PLAY.equals(intent.getAction())){
+                Control.sendControl(PlayService.ACTION_CONTROL_PLAY, null);
+                setIsPlay();
+            }
+
+            AppWidgetManager.getInstance(context).updateAppWidget( new ComponentName(context, WidgetPlayer.class),views);
+        }catch (Exception ex){
+            Log.d(">>> ken <<<", Log.getStackTraceString(ex));
         }
-
-        AppWidgetManager.getInstance(context).updateAppWidget( new ComponentName(context, WidgetPlayer.class),views);
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////
 
     protected PendingIntent getPendingSelfIntent(Context context, String action) {
+
         Intent intent = new Intent(context, getClass());
         intent.setAction(action);
         return PendingIntent.getBroadcast(context, 0, intent, 0);
@@ -157,23 +164,26 @@ public class WidgetPlayer extends AppWidgetProvider implements Observer{
 
     @Override
     public void update(Observable observable, Object data) {
-//        views = new RemoteViews(mContext.getPackageName(), R.layout.widget_layout);
 
-        // get text
-        String textTime =  MyUtils.formatSecondsAsTime(Long.valueOf(myObserv.getObserver().getValue()))+"";
+        try {
+            // get text
+            String textTime = MyUtils.formatSecondsAsTime(Long.valueOf(myObserv.getObserver().getValue())) + "";
 
-        // set text
-        views.setTextViewText(R.id.tvTimeWidget, textTime);
-        views.setTextViewText(R.id.tvSongTitleWidget, PlayService.titleSong);
+            // set text
+            views.setTextViewText(R.id.tvTimeWidget, textTime);
+            views.setTextViewText(R.id.tvSongTitleWidget, PlayService.titleSong);
 
-        if(myObserv.getObserver().getIsPlaying()){
-            setIsPlay();
-        } else {
-            setIsNotPlay();
+            if (myObserv.getObserver().getIsPlaying()) {
+                setIsPlay();
+            } else {
+                setIsNotPlay();
+            }
+
+            // update widget
+            AppWidgetManager.getInstance(mContext).updateAppWidget(new ComponentName(mContext, WidgetPlayer.class), views);
+        }catch ( Exception ex){
+            Log.d(">>> ken <<<", Log.getStackTraceString(ex));
         }
-
-        // update widget
-        AppWidgetManager.getInstance(mContext).updateAppWidget( new ComponentName(mContext, WidgetPlayer.class),views);
 
     }
 }

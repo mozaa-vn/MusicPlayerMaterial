@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -14,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.ken.music.objects.BitRate;
 import com.ken.music.objects.Song;
+import com.ken.music.objects.SongOffline;
 import com.ken.music.objects.SongOnline;
 
 public class MyUtils {
@@ -106,27 +108,6 @@ public class MyUtils {
 
 
     ////////////////////////////////////////////////////////////////////////////////
-    // TODO text running
-
-	public static Animation textRunning(int screenWidth, int textLength) {
-		
-		Animation mAnimation = new TranslateAnimation(
-										screenWidth - 88,	// from trục X
-										-textLength * 19,	// to	trục X 
-										0,					// from trục Y
-										0); 				// to	trục Y
-		// thời gian 1 vòng chạy
-		mAnimation.setDuration(20000);
-		// định nghĩa cơ chế chạy
-		mAnimation.setRepeatMode(Animation.ZORDER_BOTTOM);
-		// lặp vô tận
-		mAnimation.setRepeatCount(Animation.INFINITE);
-		
-		return mAnimation;
-	}// end-anim textRunning
-
-
-    ////////////////////////////////////////////////////////////////////////////////
     // tODO format second as time
 
 	public static String formatSecondsAsTime(long millis) {
@@ -172,6 +153,42 @@ public class MyUtils {
 
         return -1;
     }
+
+    public static int positionOfSongOffline(List<SongOffline> listData, SongOffline item ){
+
+        for(SongOffline object : listData){
+            if(item.getTitle().equals(object.getTitle()) ){
+                return listData.indexOf(object);
+            }
+        }// end-for
+
+        return -1;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // TODO check is mp3
+
+    public static boolean isMp3(String dataPath){
+
+        StringTokenizer stk = new StringTokenizer(dataPath, ".");
+
+        stk.nextToken();
+        String extra = stk.nextToken().toString();
+        if(extra.equals("mp3") || extra.equals("flac") ){
+            Log.d(">>> ken <<<", "extra :: " + extra );
+
+            return true;
+        }
+
+        return false;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // TODO
+
+
 
 
 }

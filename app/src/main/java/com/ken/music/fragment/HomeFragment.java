@@ -11,8 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 import com.ken.music.activity.R;
+import com.ken.music.controls.LocalLibrary;
+import com.ken.music.utils.Vars;
+
+import org.w3c.dom.Text;
 
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 
@@ -31,6 +36,13 @@ public class HomeFragment extends Fragment {
                 rlOnlineSearch,
                 rlOnlineBxh,
                 rlOnlineBlogTruyen;
+
+    private TextView
+                tvTotalSongbanner,
+                tvSongTotalView,
+                tvAlbumTotalView,
+                tvArtistTotalView,
+                tvPlaylistTotalView;
 
     View mView;
 
@@ -58,6 +70,12 @@ public class HomeFragment extends Fragment {
         rlOnlineBxh			.setOnClickListener(rlOnlineBxhEvent);
         rlOnlineBlogTruyen	.setOnClickListener(rlOnlineBlogTruyenEvent);
 
+        // set text size off data offline
+        tvTotalSongbanner.setText(Vars.listSongOffline.size()+"");
+        tvSongTotalView  .setText(Vars.listSongOffline.size() + "");
+        tvAlbumTotalView .setText(Vars.listAlbumOffline.size() +"");
+        tvArtistTotalView.setText(Vars.listArtistOffline.size() +"");
+//        tvPlaylistTotalView.setText(Vars.listPlaylistOffline.size() +"");
 
         return mView;
     }// end-func onCreateView
@@ -77,6 +95,12 @@ public class HomeFragment extends Fragment {
         rlOfflinePlayList	= (RelativeLayout) mView.findViewById(R.id.rlOfflinePlayList);
         rlOnlineBlogTruyen	= (RelativeLayout) mView.findViewById(R.id.rlOnlineBlogTruyen);
 
+        tvTotalSongbanner   = (TextView) mView.findViewById(R.id.tvTotalSongbanner);
+        tvSongTotalView     = (TextView) mView.findViewById(R.id.tvSongTotalView);
+        tvAlbumTotalView    = (TextView) mView.findViewById(R.id.tvAlbumTotalView);
+        tvArtistTotalView   = (TextView) mView.findViewById(R.id.tvArtistTotalView);
+        tvPlaylistTotalView = (TextView) mView.findViewById(R.id.tvPlaylistTotalView);
+
     }// end-func initControls
 
 
@@ -86,7 +110,7 @@ public class HomeFragment extends Fragment {
     OnClickListener rlOfflineMusicEvent = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            ((MaterialNavigationDrawer) getActivity()).setFragmentChild(new ChildFragment(),"Bài Hát");
+            ((MaterialNavigationDrawer) getActivity()).setFragmentChild(new SongOfflineFragment(),"Bài Hát");
         }
     };// end-event rlOfflineMusicEvent
 
@@ -94,7 +118,7 @@ public class HomeFragment extends Fragment {
     OnClickListener rlOfflineArtistEvent = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            ((MaterialNavigationDrawer) getActivity()).setFragmentChild(new ChildFragment(),"Ca Sỹ");
+            ((MaterialNavigationDrawer) getActivity()).setFragmentChild(new ArtistOfflineFragment(),"Ca Sỹ");
         }
     };// end-event rlOfflineArtistEvent
 
@@ -110,7 +134,7 @@ public class HomeFragment extends Fragment {
     OnClickListener rlOfflineAlbumEvent = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            ((MaterialNavigationDrawer) getActivity()).setFragmentChild(new ChildFragment(),"Album");
+            ((MaterialNavigationDrawer) getActivity()).setFragmentChild(new AlbumOfflineFragment(),"Album");
         }
     }; //end-event rlOfflineAlbumEvent
 
