@@ -36,23 +36,15 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class PlayService extends Service implements
-                                                Observer,
 												OnErrorListener,
 												OnInfoListener, 
 												OnBufferingUpdateListener, 
 												OnSeekCompleteListener, 
 												OnPreparedListener{
 	
-////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 	
 	private MediaPlayer mediaPlayer = new MediaPlayer();
-	public static int	NOTIFYCATION_ID = 55;
-	
-	private NotificationCompat.Builder 	mBuilder;
-	private NotificationManager 		mNotificationManager;
-	private RemoteViews 				notifiExpandView,
-										notifiSmallView;
-	private Notification 				notification;
 	
 	//Action of intent
 	public final static String 
@@ -102,15 +94,7 @@ public class PlayService extends Service implements
 			
 			TYPE_SONG_ONLINE			= 0x0,
 			TYPE_SONG_OFFLINE			= 0x1,
-					
-			LIST_ALL_LOCAL				= 0x1,
-			LIST_ALL_ONLINE				= 0x2,
-			LIST_ALBUM					= 0x3,
-			LIST_ARTIST					= 0x4,
-			
-			FEED_ACTION_BUFFER 			= 0x1,
-			FEED_ACTION_SEND_POSITION 	= 0x2,
-			
+
 			VALUE_SEEK			= 5000;
 	
 	private Intent 	
@@ -146,8 +130,8 @@ public class PlayService extends Service implements
     Vars myObserv; // instance of observer
     Context context;
 	
-////////////////////////////////////////////////////////////////////////////////
-// service life cycle
+    ////////////////////////////////////////////////////////////////////////////////
+    // TODO service life cycle
 	
 	@Override
 	public void onCreate() {
@@ -167,7 +151,6 @@ public class PlayService extends Service implements
 
         // setting up observer
         myObserv = (Vars) getApplication();
-//        myObserv.getObserver().addObserver(this);
 		mediaPlayer.reset();
 
         // send notify update UI
@@ -208,8 +191,6 @@ public class PlayService extends Service implements
 	public void onDestroy() {
 		super.onDestroy();
 
-//        myObserv.getObserver().setIsStopMedia(true);
-
 		//stop media
 		if (mediaPlayer != null) {
 			if(mediaPlayer.isPlaying())
@@ -233,7 +214,7 @@ public class PlayService extends Service implements
 
 	
 	////////////////////////////////////////////////////////////////////////////////
-	// implements methods
+	// TODO implements methods
 	
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -290,13 +271,13 @@ public class PlayService extends Service implements
 
 	@Override
 	public boolean onInfo(MediaPlayer mp, int what, int extra) {
-		Log.d(">>>>> ken <<<<<", "PlayService --- onInfo");
+		Log.d(">>> ken <<<", "PlayService --- onInfo");
 		return false;
 	}// end-func onInfo
 
 	
-////////////////////////////////////////////////////////////////////////////////
-// controls media player
+    ////////////////////////////////////////////////////////////////////////////////
+    // TODO controls media player
 	
 	private void playMedia(){
 		// TODO play
@@ -307,7 +288,7 @@ public class PlayService extends Service implements
 	
 	private void playNewMedia(int typeOfSong, Song object){
 		// TODO play new
-		Log.d(">>>>> ken <<<<<", "PlayService --- playNewMedia");
+		Log.d(">>> ken <<<", "PlayService --- playNewMedia");
 		try{
 			// release media 
 			mediaPlayer.reset();
@@ -342,7 +323,6 @@ public class PlayService extends Service implements
 			
 			// start media
 			mediaPlayer.start();
-//            myObserv.getObserver().setIsStopMedia(false);
             myObserv.getObserver().setIsPlaying(true);
             intSongDuration = mediaPlayer.getDuration();
             Log.d(">>> ken <<<", "position: " + mediaPlayer.getCurrentPosition() + "-- duration: "+mediaPlayer.getDuration());
@@ -529,24 +509,17 @@ public class PlayService extends Service implements
 		sendBroadcast(bufferedIntent);
 	}
 
-///////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////
 	
 	
-///////////////////////////////////////////////////////////////////////////////
-//Thread use to send position update
+    ///////////////////////////////////////////////////////////////////////////////
+    //Thread use to send position update
 
 
 	private Runnable sendUpdate2UI = new Runnable() {		
 		@Override
 		public void run() {
 			if(mediaPlayer.isPlaying()){
-//				intMediaPosition = mediaPlayer.getCurrentPosition();
-//				intMediaDuration = mediaPlayer.getDuration();
-//
-//				seekIntent.putExtra(KEY_UPDATE_SEEK_POSITION, intMediaPosition);
-//				seekIntent.putExtra(KEY_UPDATE_SEEK_DURATION, intMediaDuration);
-//				//seekIntent.putExtra(KEY_UPDATE_SEEK_ENDED, songEnd);
-//				sendBroadcast(seekIntent);
 
                 myObserv.getObserver().setValue(mediaPlayer.getCurrentPosition() + "");
 
@@ -561,8 +534,4 @@ public class PlayService extends Service implements
 	};
 
 
-    @Override
-    public void update(Observable observable, Object data) {
-
-    }
 }
