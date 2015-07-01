@@ -23,6 +23,8 @@ import com.ken.music.objects.SongOnline;
 import com.ken.music.utils.MyUtils;
 import com.ken.music.utils.Vars;
 
+import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
+
 /**
  * Created by admin on 5/22/2015.
  */
@@ -95,12 +97,16 @@ public class SongOfflineFragment extends Fragment {
                 // send data thought broadcast
                 Control.sendPlayNew(PlayService.TYPE_SONG_OFFLINE, songSend);
 
-                // show my view control
-
                 // set up data for service
                 PlayService.intCurrentSong = MyUtils.positionOfSongOffline(PlayService.currentListOffline, songSend);
                 PlayService.intTotalSong = Vars.listSongOffline.size();
                 PlayService.titleSong = songSend.getTitle();
+
+                // set song
+                Vars.songOffline = songSend;
+
+                // start fragment song playing
+                ((MaterialNavigationDrawer) getActivity()).setFragmentChild(new SongPlayingFragment(),songSend.getTitle());
 
             } catch (Exception ex) {
                 ex.printStackTrace();

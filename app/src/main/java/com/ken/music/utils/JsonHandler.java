@@ -39,8 +39,7 @@ public class JsonHandler {
 		try {
 			int read;
 			URL url			 	= new URL(urlString);
-			reader 				= new BufferedReader(
-										new InputStreamReader(url.openStream()));
+			reader 				= new BufferedReader(new InputStreamReader(url.openStream()));
 			StringBuffer buffer = new StringBuffer();
 			char[] chars 		= new char[1024];
 			

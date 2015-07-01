@@ -33,7 +33,7 @@ public class ChildFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
         MenuItem item=menu.findItem(R.id.search);
-        item.setVisible(true);
+        item.setVisible(false);
 
         super.onCreateOptionsMenu(menu, inflater);
     }

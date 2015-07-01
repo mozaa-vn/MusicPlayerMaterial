@@ -80,6 +80,8 @@ public class Vars extends Application {
 
     public static List<SongOnline>  listSongOnline  = null;
 
+    public static SongOffline songOffline = null;
+
 
 	// video info of a video
 	// http://api.mp3.zing.vn/api/mobile/video/getvideoinfo?keycode=fafd463e2131914934b73310aa34a23f&requestdata={"id":1074729245}

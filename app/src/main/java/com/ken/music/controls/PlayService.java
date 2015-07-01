@@ -529,7 +529,7 @@ public class PlayService extends Service implements
 
 			}//end-if
 
-			handler.postDelayed(sendUpdate2UI, 1000);
+			handler.postDelayed(sendUpdate2UI, 200);
 		}
 	};
 
